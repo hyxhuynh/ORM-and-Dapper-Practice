@@ -23,15 +23,18 @@ namespace ORM_and_Dapper_Practice
             string newDepartment = Console.ReadLine();
             departmentRepo.InsertDepartment(newDepartment);
             IEnumerable<Department> departments = departmentRepo.GetAllDepartments();
-            foreach ( var d in departments )
+            foreach (var d in departments)
             {
                 Console.WriteLine(d.Name);
                 Console.WriteLine(d.DepartmentID);
                 Console.WriteLine();
             }
 
-            // Products
+            // Create an instance of DapperProductRepository
             DapperProductRepository productRepo = new DapperProductRepository(conn);
+
+            // Products
+            // INSERT a new product into the 'products' table
             Console.WriteLine("Type a new Product name:");
             string inputProductName = Console.ReadLine();
             Console.WriteLine("Type a new Product price:");
@@ -42,16 +45,57 @@ namespace ORM_and_Dapper_Practice
             int inputCategoryID = int.Parse(Console.ReadLine());
 
             productRepo.InsertProduct(inputProductName, inputProductPrice, inputProductID, inputCategoryID);
+
+            // SELECT * FROM products
             IEnumerable<Product> products = productRepo.GetAllProducts();
             foreach (var p in products)
             {
-                Console.WriteLine(p.Name);
-                Console.WriteLine(p.Price);
-                Console.WriteLine(p.ProductID);
-                Console.WriteLine(p.CategoryID);
+                Console.WriteLine($"Product Name: {p.Name}");
+                Console.WriteLine($"Price: ${p.Price}");
+                Console.WriteLine($"Product ID: {p.ProductID}");
+                Console.WriteLine($"Category ID: {p.CategoryID}");
                 Console.WriteLine();
             }
 
+            // UPDATE an existing product (Name, Price, Product ID) using Product ID
+            Console.WriteLine("Type the Product ID of the product you want to update:");
+            int existingProductID = int.Parse(Console.ReadLine());
+            Console.WriteLine("Type a new Product name:");
+            string newProductName = Console.ReadLine();
+            Console.WriteLine("Type a new Product price:");
+            double newProductPrice = double.Parse(Console.ReadLine());
+            Console.WriteLine("Type a new Category ID");
+            int newCategoryID = int.Parse(Console.ReadLine());
+
+            productRepo.UpdateProduct(newProductName, newProductPrice, newCategoryID, existingProductID);
+
+            // SELECT * FROM products
+            IEnumerable<Product> newProducts = productRepo.GetAllProducts();
+            foreach (var p in newProducts)
+            {
+                Console.WriteLine($"Product Name: {p.Name}");
+                Console.WriteLine($"Price: ${p.Price}");
+                Console.WriteLine($"Product ID: {p.ProductID}");
+                Console.WriteLine($"Category ID: {p.CategoryID}");
+                Console.WriteLine();
+            }
+
+            // DELETE an existing product using Product ID
+            Console.WriteLine("Type the Product ID of the product you want to delete:");
+            int currentProductID = int.Parse(Console.ReadLine());
+
+            productRepo.DeleteProduct(currentProductID);
+
+            // SELECT * FROM products
+            IEnumerable<Product> afterDeleteProducts = productRepo.GetAllProducts();
+            foreach (var p in afterDeleteProducts)
+            {
+                Console.WriteLine($"Product Name: {p.Name}");
+                Console.WriteLine($"Price: ${p.Price}");
+                Console.WriteLine($"Product ID: {p.ProductID}");
+                Console.WriteLine($"Category ID: {p.CategoryID}");
+                Console.WriteLine();
+            }
         }
     }
 }

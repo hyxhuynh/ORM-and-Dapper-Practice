@@ -18,18 +18,42 @@ namespace ORM_and_Dapper_Practice
         {
             _connection = connection;
         }
+
+        public IEnumerable<Product> GetAllProducts()
+        {
+            return _connection.Query<Product>("SELECT * FROM products;").ToList();
+        }
         public void InsertProduct(string newProductName, double newProductPrice, int newProductID, int newCategoryID)
         {
-            _connection.Execute("INSERT INTO Products (Name, Price, ProductID, CategoryID) VALUES (@productName, @productPrice, @productID, @categoryID);",
+            _connection.Execute("INSERT INTO products (Name, Price, ProductID, CategoryID) VALUES (@productName, @productPrice, @productID, @categoryID);",
                 new { productName = newProductName,
                 productPrice = newProductPrice,
                 productID = newProductID,
                 categoryID = newCategoryID});
         }
 
-        public IEnumerable<Product> GetAllProducts()
+        public void UpdateProduct(string newProductName, double newProductPrice, int newCategoryID, int newProductID)
         {
-            return _connection.Query<Product>("SELECT * FROM Products;").ToList();
+            _connection.Execute("UPDATE products SET Name = @productName, Price = @productPrice, CategoryID = @categoryID WHERE ProductID = @productID;",
+                new
+                {
+                    productName = newProductName,
+                    productPrice = newProductPrice,
+                    productID = newProductID,
+                    categoryID = newCategoryID
+                });
         }
+        public void DeleteProduct(int inputProductID)
+        {
+            _connection.Execute("DELETE FROM reviews WHERE ProductID = @productID;",
+                new { productID = inputProductID });
+
+            _connection.Execute("DELETE FROM sales WHERE ProductID = @productID;",
+               new { productID = inputProductID });
+
+            _connection.Execute("DELETE FROM products WHERE ProductID = @productID;",
+               new { productID = inputProductID });
+        }
+
     }
 }
